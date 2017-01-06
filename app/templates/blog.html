@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row clearfix">
+    <div class="col-md-12 column" style="white-space:normal;word-break:break-all;word-wrap:break-word;">
+        <div class="page-header">
+            <h2>
+                {{ record.title }}
+            </h2>
+        </div>
+        <p>
+            {{ record.content|safe }}
+        </p>
+        <p>&nbsp</p>
+        <p>&nbsp</p>
+        {% for tag in record.get_tags %}
+        <span class="label label-default">{{ tag }}</span>
+        {% endfor %}
+
+        <div class="page-header">
+            <h5>评论</h5>
+        </div>
+
+        {% for comment in blog_comment %}
+        <div class="media">
+            <a class="pull-left">
+                <img src="/img/default-avatars.png" height="35" width="35" class="media-object" alt=''/>
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    <b>{{ comment.post_nickname }}： </b>
+                </h4>
+                {{ comment.context }}
+                <button style="float:right" type="button" class="btn btn-link btn-sm"
+                        onclick="showreplymodalfade('{{ comment.id }}','{{ comment.post_user }}');"
+                        data-toggle="modal">
+                    回复
+                </button>
+                {% for reply in comment.replys %}
+                <hr style="border: 0;height: 1px;width:100%;background: #B0B0B0;">
+                <div class="media">
+                    <a class="pull-left">
+                        <img src="/img/default-avatars.png"  height="35" width="35" class="media-object" alt=''/>
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading">
+                            <b>{{ reply.post_nickname }} 回复@{{ reply.replynickname }}： </b>
+                        </h4>
+                        {{ reply.context }}
+                        <button style="float:right" type="button" class="btn btn-link btn-sm"
+                                onclick="showreplymodalfade('{{ comment.id }}','{{ reply.post_user }}');"
+                                data-toggle="modal">
+                            回复
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <hr style="border: 0;height: 1px;width:100%;background: #B0B0B0;">
+        {% endfor %}
+
+        {% if g.user.is_authenticated %}
+        <form role="form">
+            <div class="form-group">
+                <textarea class='comments' id="comment" name="comment" placeholder="评论"></textarea>
+            </div>
+            <div style="text-align:right;">
+                <button type="button" class="btn btn-inverse" onclick="submit_comment();">提交</button>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-dismissable alert-info">
+            <a id="modal-login-" href="#modal-container-login" data-toggle="modal"> 登陆
+            </a> 或者
+            <a id="modal-register-" href="#modal-container-register" data-toggle="modal"> 注册
+            </a> 之后才能评论
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="modal fade" id="replydialog" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="comment_form" role="form">
+                    <div class="form-group">
+                        <textarea class='comments' id="replytextarea" name="replytextarea"
+                                  placeholder="评论"></textarea>
+
+                        <button type="button" style="float:right;margin-top:3px;" class="btn btn-inverse btn-sm"
+                                onclick="reply();">回复
+                        </button>
+                    </div>
+                    <a hidden='hidden' id='tocomment'/>
+                    <a hidden='hidden' id='towho'/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function submit_comment() {
+        var context = document.getElementById('comment').value;
+        var blog_id = '{{ record.id}}';
+        $.post('/comment', {
+            context: context,
+            bid: blog_id
+        }).done(function () {
+            location.reload(true)
+        }).fail(function () {
+            alert('评论失败')
+        });
+    }
+    ;
+    function showreplymodalfade(tocomment, towho) {
+        $("#tocomment").val(tocomment);
+        $("#towho").val(towho);
+        $('#replydialog').modal('show');
+    }
+    ;
+    function reply() {
+        var context = document.getElementById("replytextarea").value
+        var tocomment = document.getElementById("tocomment").value
+        var towho = document.getElementById("towho").value
+        $.post('/reply', {
+            context: context,
+            bid: '{{ record.id}}',
+            to_what: tocomment,
+            to_who: towho
+        }).done(function () {
+            location.reload(true)
+        }).fail(function () {
+            alert('评论失败')
+        });
+    }
+    ;
+</script>
+{% endblock %}

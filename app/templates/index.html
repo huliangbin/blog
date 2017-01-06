@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row clearfix">
+    <div class="col-md-12 column">
+        <div class="page-header">
+            <h3>
+                最新发布
+                <small>
+                    <div class="btn-group btn-group-md" style="float:right">
+                        <button id="previousbtn" class="btn btn-default" type="button" onclick="previous();">
+                            上一页
+                        </button>
+                        <button id="nextbtn" class="btn btn-default" type="button" onclick="next();">
+                            下一页
+                        </button>
+                    </div>
+                </small>
+            </h3>
+        </div>
+        {% for post in recent_posts %}
+        <div class="jumbotron well" style="white-space:normal;word-break:break-all;word-wrap:break-word;">
+            <h2>
+                {{post.title}}
+            </h2>
+            <p>
+                {{post.preview}}
+            </p>
+            <p>
+                <a class="btn btn-primary btn-large" href="{{ url_for('blog', blog_id=post.id) }}">查看更多</a>
+                <span style="float:right;">
+                    {% for tag in post.get_tags %}
+                    <span class="label label-default">{{tag}}</span>
+                    {% endfor %}
+                </span>
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var querypage = '{{ querypage }}';
+        if (querypage >= '{{ max_page }}') {
+            $('#nextbtn').attr("disabled", true);
+        }
+        if (querypage <= 1) {
+            $('#previousbtn').attr("disabled", true);
+        }
+    });
+    function next() {
+        var querypage = '{{ querypage }}';
+        if (querypage < '{{ max_page }}') {
+            var url = "{{url_for('index', page=querypage+1)}}";
+            window.location = url;
+        }
+    }
+    function previous() {
+        var querypage = '{{ querypage }}';
+        if (querypage > 1) {
+            var url = "{{url_for('index', page=querypage-1)}}";
+            window.location = url;
+        }
+    }
+</script>
+{% endblock %}

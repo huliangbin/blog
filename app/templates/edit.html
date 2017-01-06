@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="/js/jquery.tag-editor.js"></script>
+<script src="/js/jquery.caret.min.js"></script>
+<script src="/js/summernote.js"></script>
+
+<p>&nbsp</p>
+<p>&nbsp</p>
+
+<div class="form-group">
+    <label for="title">标题</label>
+    <input type="title" class="form-control" id="title" name="un"/>
+</div>
+<div id="summernote">
+    <p>here</p>
+</div>
+
+<textarea id="tagedit" class="tag-editor-hidden-src" readonly="readonly" style="display: block;"></textarea>
+<p>&nbsp</p>
+
+<div class="btn-group btn-group-lg">
+    <button type="button" class="btn btn-primary" onclick="preview();">预览</button>
+    <button type="button" class="btn btn-primary" onclick="post();">提交</button>
+</div>
+
+<span id="pv"></span>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#summernote').summernote({
+            callbacks: {
+                onInit: null,
+                onFocus: null,
+                onBlur: null,
+                onEnter: null,
+                onKeyup: null,
+                onKeydown: null,
+                onImageUpload: onimageinsert,
+                onImageUploadError: null
+            },
+            height: 200
+        });
+
+        $('#tagedit').tagEditor({
+            initialTags: [],
+            delimiter: ', ', /* space and comma */
+            placeholder: 'Enter tags ...'
+        });
+    });
+
+    function onimageinsert(files) {
+        var $editor = $(this);
+        // 构建一个 form 数据
+        var formdata = new FormData()
+        // 增加一个字段 fileup 值是待上传的文件的内容
+        formdata.append('fileup', files[0])
+
+        $.ajax({
+            url: 'upload',
+            type: 'POST',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                var imgURL = result.url;   // 获取服务端返回的图片地址
+                // 插入图片
+                $editor.summernote('insertImage', imgURL);
+            }
+        });
+    }
+
+    function preview() {
+        var pv = document.getElementById('pv');
+        var markupStr = $('#summernote').summernote('code');
+        pv.innerHTML = markupStr;
+        alert(markupStr)
+    }
+    ;
+
+    function post() {
+        var userAgent = navigator.userAgent;
+        if (userAgent.indexOf("Chrome") == -1){
+            alert('用chrome发表');
+            return;
+        }
+        var title = document.getElementById("title").value;
+        var content = $('#summernote').summernote('code');
+        var tags = $('#tagedit').tagEditor('getTags')[0].tags;
+        $.post('/post', {
+            title: title,
+            content: content,
+            tags: tags
+        }).done(function (result) {
+            var error_info = result['error']
+            if (typeof(error_info) != "undefined") {
+                alert(error_info)
+                return
+            }
+            var rd_info = result['rd']
+            if (typeof(rd_info) != 'undefined') {
+                window.location = rd_info
+            }
+        }).fail(function () {
+            alert('提交失败')
+        });
+    }
+    ;
+</script>
+{% endblock %}

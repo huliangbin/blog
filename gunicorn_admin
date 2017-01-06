@@ -1,0 +1,13 @@
+#! /bin/bash
+if [ $1 = 'start' ]
+then
+    source /Users/huliangbin/Python_virtualenv/venv/bin/activate
+    gunicorn --config gunicorn.conf app:app
+    deactivate
+elif [ $1 = 'stop' ]
+then
+    ps -ef | grep gunicorn | grep -v grep | awk '{print $2}' | head -n 1 | xargs kill -2
+else
+    echo 'error param'
+fi
+
