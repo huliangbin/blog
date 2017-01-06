@@ -86,17 +86,17 @@
                                 </li>
                             </ul>
                         </li>
-                        <!--{% else %}-->
-                        <!--<li>-->
-                            <!--<a id="modal-login" href="#modal-container-login"-->
-                               <!--role="li" class="li" data-toggle="modal"> 登陆-->
-                            <!--</a>-->
-                        <!--</li>-->
-                        <!--<li>-->
-                            <!--<a id="modal-register" href="#modal-container-register"-->
-                               <!--role="li" class="li" data-toggle="modal"> 注册-->
-                            <!--</a>-->
-                        <!--</li>-->
+                        {% else %}
+                        <li>
+                            <a id="modal-login" href="#modal-container-login"
+                               role="li" class="li" data-toggle="modal"> 登陆
+                            </a>
+                        </li>
+                        <li>
+                            <a id="modal-register" href="#modal-container-register"
+                               role="li" class="li" data-toggle="modal"> 注册
+                            </a>
+                        </li>
                         {% endif %}
                     </ul>
                 </div>
@@ -172,6 +172,7 @@
             var error_info = result['error']
             if (typeof(error_info) != "undefined") {
                 alert(error_info)
+                return;
             } else {
                 $('#modal-container-register').modal('hide')
             }

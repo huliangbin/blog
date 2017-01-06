@@ -10,6 +10,7 @@ from flask.ext.login import logout_user
 
 from app import app, lm, db
 from app.src.models.user import User
+from config import filter
 
 
 @app.route("/login", methods=['POST'])
@@ -38,6 +39,11 @@ def register():
     old_record = User.query.filter_by(username=username).first()
     if old_record:
         return jsonify({'error': '用户名已存在'})
+
+    if filter:
+        for pattern in filter:
+            if pattern.match(nickname):
+                return jsonify({'error': '非法字符'})
 
     # md5加密密码
     password = request.form['pw']
