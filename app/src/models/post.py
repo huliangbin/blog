@@ -25,5 +25,5 @@ class Post(db.Model):
 
     @property
     def preview(self):
-        content_preview = re.sub(r'</?\w+[^>]*>', '', self.content)
+        content_preview = re.sub(r'</?\w+[^>]*>|&nbsp;', '', self.content)
         return content_preview[:100]
