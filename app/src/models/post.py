@@ -9,6 +9,7 @@ class Post(db.Model):
     title = db.Column(db.String(255), index=True, nullable=False)
     content = db.Column(db.Text, nullable=False)
     tags = db.Column(db.String(255), nullable=False)
+    temp = db.Column(db.Integer, default=0)  # 0表示未发布的
 
     def __repr__(self):
         return '%s, %s' % (self.id, self.title)

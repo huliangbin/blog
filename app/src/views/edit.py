@@ -20,7 +20,8 @@ def edit():
         return render_template('404.html'), 404
     if not user.is_admin:
         return render_template('404.html'), 404
-    return render_template("edit.html", title=u"编辑")
+    next_id = Post.query.count() + 1
+    return render_template("edit.html", title=u"编辑", next_id=next_id, p=None)
 
 
 @app.route('/post', methods=['POST'])
@@ -30,14 +31,44 @@ def post():
         return render_template('404.html'), 404
     if not user.is_admin:
         return render_template('404.html'), 404
+    post_id = request.form['id']
     title = request.form['title']
     content = request.form['content']
     tags = request.form.getlist('tags[]')
 
-    new_post = Post(title=title, content=content, tags=','.join(tags))
-    db.session.add(new_post)
+    new_post = Post(id=post_id, title=title, content=content, tags=','.join(tags), temp=1)
+    db.session.merge(new_post)
     db.session.commit()
     return jsonify({'rd': url_for('blog', blog_id=new_post.id)})
+
+
+@app.route('/save', methods=['POST'])
+def save():
+    user = g.user
+    if user is None or not user.is_authenticated:
+        return render_template('404.html'), 404
+    if not user.is_admin:
+        return render_template('404.html'), 404
+    post_id = request.form['id']
+    title = request.form['title']
+    content = request.form['content']
+    tags = request.form.getlist('tags[]')
+
+    new_post = Post(id=int(post_id), title=title, content=content, tags=','.join(tags))
+    db.session.merge(new_post)
+    db.session.commit()
+    return jsonify({'result': 'ok'})
+
+
+@app.route('/modify/<int:blog_id>')
+def modify(blog_id):
+    user = g.user
+    if user is None or not user.is_authenticated:
+        return render_template('404.html'), 404
+    if not user.is_admin:
+        return render_template('404.html'), 404
+    p = Post.query.filter_by(id=blog_id).first()
+    return render_template("edit.html", title=u"修改", p=p, next_id=p.id)
 
 
 @app.route('/blog/<int:blog_id>', methods=['POST', 'GET'])

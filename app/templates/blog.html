@@ -12,6 +12,9 @@
         </p>
         <p>&nbsp</p>
         <p>&nbsp</p>
+        {% if g.user.is_admin %}
+        <a href="/modify/{{ record.id }}">修改</a>
+        {% endif %}
         {% for tag in record.get_tags %}
         <span class="label label-default">{{ tag }}</span>
         {% endfor %}
@@ -133,7 +136,6 @@
         }).fail(function () {
             alert('评论失败')
         });
-    }
-    ;
+    };
 </script>
 {% endblock %}

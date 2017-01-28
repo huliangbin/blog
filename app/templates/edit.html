@@ -12,7 +12,11 @@
     <input type="title" class="form-control" id="title" name="un"/>
 </div>
 <div id="summernote">
-    <p>here</p>
+    {% if p.content != '' %}
+    <p>{{ p.content|safe }}</p>
+    {% else %}
+    <p></p>
+    {% endif %}
 </div>
 
 <textarea id="tagedit" class="tag-editor-hidden-src" readonly="readonly" style="display: block;"></textarea>
@@ -20,12 +24,19 @@
 
 <div class="btn-group btn-group-lg">
     <button type="button" class="btn btn-primary" onclick="preview();">预览</button>
-    <button type="button" class="btn btn-primary" onclick="post();">提交</button>
+    <button type="button" class="btn btn-primary" onclick="save_or_post(1);">保存</button>
+    <button type="button" class="btn btn-primary" onclick="save_or_post(0);">提交</button>
 </div>
 
 <span id="pv"></span>
 
 <script type="text/javascript">
+    $(document).ready(function () {
+        var exists = '{{ p }}';
+        if (exists != 'None') {
+            document.getElementById("title").value = '{{ p.title }}'
+        }
+    });
     $(document).ready(function () {
         $('#summernote').summernote({
             callbacks: {
@@ -73,32 +84,43 @@
         var pv = document.getElementById('pv');
         var markupStr = $('#summernote').summernote('code');
         pv.innerHTML = markupStr;
-        alert(markupStr)
     }
     ;
 
-    function post() {
+    function save_or_post(type) {
         var userAgent = navigator.userAgent;
-        if (userAgent.indexOf("Chrome") == -1){
+        if (userAgent.indexOf("Chrome") == -1) {
             alert('用chrome发表');
             return;
         }
         var title = document.getElementById("title").value;
         var content = $('#summernote').summernote('code');
         var tags = $('#tagedit').tagEditor('getTags')[0].tags;
-        $.post('/post', {
+        var request = '/post';
+        if (type == 1)
+            request = '/save';
+        $.post(request, {
+            id: '{{ next_id }}',
             title: title,
             content: content,
             tags: tags
         }).done(function (result) {
-            var error_info = result['error']
-            if (typeof(error_info) != "undefined") {
-                alert(error_info)
-                return
-            }
-            var rd_info = result['rd']
-            if (typeof(rd_info) != 'undefined') {
-                window.location = rd_info
+            if (type == 0) {
+                var error_info = result['error']
+                if (typeof(error_info) != "undefined") {
+                    alert(error_info)
+                    return
+                }
+                var rd_info = result['rd']
+                if (typeof(rd_info) != 'undefined') {
+                    window.location = rd_info
+                }
+            } else if (type == 1) {
+                var error_info = result['result']
+                if (typeof(error_info) != "undefined") {
+                    alert(error_info)
+                    return
+                }
             }
         }).fail(function () {
             alert('提交失败')
