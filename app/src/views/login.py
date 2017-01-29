@@ -35,8 +35,11 @@ def login():
 def register():
     username = request.form['un']
     nickname = request.form['ni']
-    # 用户名是否重复
+    # 账户是否重复
     old_record = User.query.filter_by(username=username).first()
+    if old_record:
+        return jsonify({'error': '账户已存在'})
+    old_record = User.query.filter_by(nickname=nickname).first()
     if old_record:
         return jsonify({'error': '用户名已存在'})
 
