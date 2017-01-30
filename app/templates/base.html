@@ -194,8 +194,8 @@
                 alert(error_info)
             } else {
                 $('#modal-container-login').modal('hide')
+                location.reload(true)
             }
-            location.reload(true)
         }).fail(function () {
             alert('登陆失败')
         });
