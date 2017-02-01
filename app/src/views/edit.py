@@ -112,6 +112,7 @@ def comment2someone():
 
 
 @app.route('/upload', methods=['POST'])
+@app.route('/modify/upload', methods=['POST'])
 def upload():
     if request.method == 'POST':
         image_upload = request.files['fileup']
