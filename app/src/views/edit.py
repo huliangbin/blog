@@ -79,7 +79,8 @@ def blog(blog_id):
         return render_template('500.html'), 500
     return render_template('blog.html',
                            record=record,
-                           blog_comment=blog_comment)
+                           blog_comment=blog_comment,
+                           title=record.title)
 
 
 @app.route('/comment', methods=['POST'])
