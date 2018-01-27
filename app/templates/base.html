@@ -13,17 +13,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type="text/css">
         .comments {
-            width:100%;
-            height:17%;
-            overflow:auto;
-            word-break:break-all;
-            word-wrap:break-word;
+            width: 100%;
+            height: 17%;
+            overflow: auto;
+            word-break: break-all;
+            word-wrap: break-word;
         }
+
         .page-header-1 {
             padding-bottom: 9px;
             margin: 40px 0 20px;
             border-bottom: 1px solid #B0B0B0;
         }
+
         body {
             background-color: #EDEDED
         }
@@ -42,7 +44,8 @@
             </blockquote>
             <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#bs-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -52,22 +55,22 @@
                 </div>
                 <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
                     <!--<ul class="nav navbar-nav">-->
-                        <!--<li class="dropdown">-->
-                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">其他分享<strong-->
-                                    <!--class="caret"></strong></a>-->
-                            <!--<ul class="dropdown-menu">-->
-                                <!--<li>-->
-                                    <!--<a href="#">电影</a>-->
-                                <!--</li>-->
-                                <!--<li class="divider">-->
-                                <!--</li>-->
-                                <!--<li>-->
-                                    <!--<a href="#">音乐</a>-->
-                                <!--</li>-->
-                                <!--<li class="divider">-->
-                                <!--</li>-->
-                            <!--</ul>-->
-                        <!--</li>-->
+                    <!--<li class="dropdown">-->
+                    <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">其他分享<strong-->
+                    <!--class="caret"></strong></a>-->
+                    <!--<ul class="dropdown-menu">-->
+                    <!--<li>-->
+                    <!--<a href="#">电影</a>-->
+                    <!--</li>-->
+                    <!--<li class="divider">-->
+                    <!--</li>-->
+                    <!--<li>-->
+                    <!--<a href="#">音乐</a>-->
+                    <!--</li>-->
+                    <!--<li class="divider">-->
+                    <!--</li>-->
+                    <!--</ul>-->
+                    <!--</li>-->
                     <!--</ul>-->
                     <ul class="nav navbar-nav navbar-right">
                         {% if g.user.is_authenticated %}
@@ -92,16 +95,20 @@
                             </ul>
                         </li>
                         {% else %}
-                        <li>
-                            <a id="modal-login" href="#modal-container-login"
-                               role="li" class="li" data-toggle="modal"> 登陆
-                            </a>
-                        </li>
-                        <li>
-                            <a id="modal-register" href="#modal-container-register"
-                               role="li" class="li" data-toggle="modal"> 注册
-                            </a>
-                        </li>
+                        <!--<li>-->
+                        <!--<a id="modal-login" href="#modal-container-login"-->
+                        <!--role="li" class="li" data-toggle="modal"> 登陆-->
+                        <!--</a>-->
+                        <!--</li>-->
+                        <!--<li>-->
+                        <!--<a id="modal-register" href="#modal-container-register"-->
+                        <!--role="li" class="li" data-toggle="modal"> 注册-->
+                        <!--</a>-->
+                        <!--</li>-->
+                        <div class="form-group">
+                            <input type="text" id="searchText" class="form-control"/>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="search();">搜索</button>
                         {% endif %}
                     </ul>
                 </div>
@@ -185,6 +192,14 @@
         }).fail(function () {
             alert('注册失败')
         });
+    }
+
+    function search() {
+        var searchText = document.getElementById("searchText").value;
+        if (searchText.length != 0) {
+            var url = "{{url_for('index', st=searchText+1)}}";
+            window.location = url;
+        }
     }
 
     function login() {
