@@ -199,7 +199,7 @@
     function search() {
         var stv = document.getElementById("searchText").value;
         if (stv.length != 0) {
-            var url = "{{url_for('index', st=stv)}}";
+            var url = "/index/search/" + stv;
             window.location = url;
         }
     }

@@ -8,7 +8,7 @@ from app.src.models.post import Post
 @app.route('/')
 @app.route('/index')
 @app.route('/index/<int:page>')
-@app.route('/index/<string:st>')
+@app.route('/index/search/<string:st>')
 def index(page=1, st=''):
     interval = 3 if st == '' else 100
     count = Post.query.count()
