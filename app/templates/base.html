@@ -198,7 +198,7 @@
         var searchText = document.getElementById("searchText").value;
         if (searchText.length != 0) {
             $.post('/index', {
-                st: searchText,
+                st: searchText
             }).done(function () {
 //                location.reload(true)
             }).fail(function () {
