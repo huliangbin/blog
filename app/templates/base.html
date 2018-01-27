@@ -197,8 +197,13 @@
     function search() {
         var searchText = document.getElementById("searchText").value;
         if (searchText.length != 0) {
-            var url = "{{url_for('index', st=searchText+1)}}";
-            window.location = url;
+            $.post('/index', {
+                st: searchText,
+            }).done(function () {
+//                location.reload(true)
+            }).fail(function () {
+                alert('error')
+            });
         }
     }
 
