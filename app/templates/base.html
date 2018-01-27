@@ -197,15 +197,10 @@
     }
 
     function search() {
-        var searchText = document.getElementById("searchText").value;
-        if (searchText.length != 0) {
-            $.post('/search', {
-                st: searchText
-            }).done(function () {
-//                location.reload(true)
-            }).fail(function () {
-                alert('error')
-            });
+        var stv = document.getElementById("searchText").value;
+        if (stv.length != 0) {
+            var url = "{{url_for('index', st=stv)}}";
+            window.location = url;
         }
     }
 
