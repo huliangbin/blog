@@ -105,10 +105,12 @@
                         <!--role="li" class="li" data-toggle="modal"> 注册-->
                         <!--</a>-->
                         <!--</li>-->
-                        <div class="form-group">
-                            <input type="text" id="searchText" class="form-control"/>
-                        </div>
-                        <button type="button" class="btn btn-primary" onclick="search();">搜索</button>
+                        <form class="navbar-form navbar-left" role="search">
+                            <div class="form-group">
+                                <input type="text" id="searchText" class="form-control"/>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="search();">搜索</button>
+                        </form>
                         {% endif %}
                     </ul>
                 </div>
@@ -197,7 +199,7 @@
     function search() {
         var searchText = document.getElementById("searchText").value;
         if (searchText.length != 0) {
-            $.post('/index', {
+            $.post('/search', {
                 st: searchText
             }).done(function () {
 //                location.reload(true)
